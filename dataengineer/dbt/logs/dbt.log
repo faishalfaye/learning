@@ -1,0 +1,86 @@
+[0m06:22:00.049937 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10761a3d0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x107681d10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x107682450>]}
+
+
+============================== 06:22:00.053739 | c8e21bac-66d8-4671-a69d-2f498d11959a ==============================
+[0m06:22:00.053739 [info ] [MainThread]: Running with dbt=1.8.7
+[0m06:22:00.054055 [debug] [MainThread]: running dbt with arguments {'printer_width': '80', 'indirect_selection': 'eager', 'log_cache_events': 'False', 'write_json': 'True', 'partial_parse': 'True', 'cache_selected_only': 'False', 'warn_error': 'None', 'version_check': 'True', 'profiles_dir': '/Users/faishalrayyan/.dbt', 'log_path': 'logs', 'fail_fast': 'False', 'debug': 'False', 'use_colors': 'True', 'use_experimental_parser': 'False', 'empty': 'None', 'quiet': 'False', 'no_print': 'None', 'log_format': 'default', 'invocation_command': 'dbt init jaffle_shop', 'introspect': 'True', 'static_parser': 'True', 'target_path': 'None', 'warn_error_options': 'WarnErrorOptions(include=[], exclude=[])', 'send_anonymous_usage_stats': 'True'}
+[0m06:22:00.061899 [warn ] [MainThread]: [ConfigFolderDirectory]: Unable to parse dict {'dir': PosixPath('/Users/faishalrayyan/.dbt')}
+[0m06:22:00.062154 [info ] [MainThread]: Creating dbt configuration folder at 
+[0m06:22:00.063000 [debug] [MainThread]: Starter project path: /Users/faishalrayyan/Documents/programming/learning/dataengineer/dbt/dbt-env/lib/python3.11/site-packages/dbt/include/starter_project
+[0m06:22:00.066275 [info ] [MainThread]: 
+Your new dbt project "jaffle_shop" was created!
+
+For more information on how to configure the profiles.yml file,
+please consult the dbt documentation here:
+
+  https://docs.getdbt.com/docs/configure-your-profile
+
+One more thing:
+
+Need help? Don't hesitate to reach out to us via GitHub issues or on Slack:
+
+  https://community.getdbt.com/
+
+Happy modeling!
+
+[0m06:22:00.066485 [info ] [MainThread]: Setting up your profile.
+[0m06:22:31.696530 [error] [MainThread]: Encountered an error:
+dlopen(/Users/faishalrayyan/Documents/programming/learning/dataengineer/dbt/dbt-env/lib/python3.11/site-packages/pyodbc.cpython-311-darwin.so, 0x0002): Library not loaded: /opt/homebrew/opt/unixodbc/lib/libodbc.2.dylib
+  Referenced from: <14157F1E-6530-35E7-871F-806026559F60> /Users/faishalrayyan/Documents/programming/learning/dataengineer/dbt/dbt-env/lib/python3.11/site-packages/pyodbc.cpython-311-darwin.so
+  Reason: tried: '/opt/homebrew/opt/unixodbc/lib/libodbc.2.dylib' (no such file), '/System/Volumes/Preboot/Cryptexes/OS/opt/homebrew/opt/unixodbc/lib/libodbc.2.dylib' (no such file), '/opt/homebrew/opt/unixodbc/lib/libodbc.2.dylib' (no such file)
+[0m06:22:31.703388 [error] [MainThread]: Traceback (most recent call last):
+  File "/Users/faishalrayyan/Documents/programming/learning/dataengineer/dbt/dbt-env/lib/python3.11/site-packages/dbt/cli/requires.py", line 138, in wrapper
+    result, success = func(*args, **kwargs)
+                      ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/faishalrayyan/Documents/programming/learning/dataengineer/dbt/dbt-env/lib/python3.11/site-packages/dbt/cli/requires.py", line 101, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/faishalrayyan/Documents/programming/learning/dataengineer/dbt/dbt-env/lib/python3.11/site-packages/dbt/cli/main.py", line 470, in init
+    results = task.run()
+              ^^^^^^^^^^
+  File "/Users/faishalrayyan/Documents/programming/learning/dataengineer/dbt/dbt-env/lib/python3.11/site-packages/dbt/task/init.py", line 347, in run
+    self.setup_profile(profile_name)
+  File "/Users/faishalrayyan/Documents/programming/learning/dataengineer/dbt/dbt-env/lib/python3.11/site-packages/dbt/task/init.py", line 263, in setup_profile
+    self.create_profile_from_target(adapter, profile_name=profile_name)
+  File "/Users/faishalrayyan/Documents/programming/learning/dataengineer/dbt/dbt-env/lib/python3.11/site-packages/dbt/task/init.py", line 173, in create_profile_from_target
+    load_plugin(adapter)
+  File "/Users/faishalrayyan/Documents/programming/learning/dataengineer/dbt/dbt-env/lib/python3.11/site-packages/dbt/adapters/factory.py", line 239, in load_plugin
+    return FACTORY.load_plugin(name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/faishalrayyan/Documents/programming/learning/dataengineer/dbt/dbt-env/lib/python3.11/site-packages/dbt/adapters/factory.py", line 68, in load_plugin
+    mod: Any = import_module("." + name, "dbt.adapters")
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1206, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1178, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1149, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/Users/faishalrayyan/Documents/programming/learning/dataengineer/dbt/dbt-env/lib/python3.11/site-packages/dbt/adapters/fabric/__init__.py", line 3, in <module>
+    from dbt.adapters.fabric.fabric_adapter import FabricAdapter
+  File "/Users/faishalrayyan/Documents/programming/learning/dataengineer/dbt/dbt-env/lib/python3.11/site-packages/dbt/adapters/fabric/fabric_adapter.py", line 23, in <module>
+    from dbt.adapters.fabric.fabric_connection_manager import FabricConnectionManager
+  File "/Users/faishalrayyan/Documents/programming/learning/dataengineer/dbt/dbt-env/lib/python3.11/site-packages/dbt/adapters/fabric/fabric_connection_manager.py", line 10, in <module>
+    import pyodbc
+ImportError: dlopen(/Users/faishalrayyan/Documents/programming/learning/dataengineer/dbt/dbt-env/lib/python3.11/site-packages/pyodbc.cpython-311-darwin.so, 0x0002): Library not loaded: /opt/homebrew/opt/unixodbc/lib/libodbc.2.dylib
+  Referenced from: <14157F1E-6530-35E7-871F-806026559F60> /Users/faishalrayyan/Documents/programming/learning/dataengineer/dbt/dbt-env/lib/python3.11/site-packages/pyodbc.cpython-311-darwin.so
+  Reason: tried: '/opt/homebrew/opt/unixodbc/lib/libodbc.2.dylib' (no such file), '/System/Volumes/Preboot/Cryptexes/OS/opt/homebrew/opt/unixodbc/lib/libodbc.2.dylib' (no such file), '/opt/homebrew/opt/unixodbc/lib/libodbc.2.dylib' (no such file)
+
+[0m06:22:31.737934 [debug] [MainThread]: Resource report: {"command_name": "init", "command_wall_clock_time": 31.720379, "process_user_time": 0.563212, "process_kernel_time": 0.085683, "process_mem_max_rss": "96976896", "command_success": false, "process_in_blocks": "0", "process_out_blocks": "0"}
+[0m06:22:31.738638 [debug] [MainThread]: Command `dbt init` failed at 06:22:31.738541 after 31.72 seconds
+[0m06:22:31.739029 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x107681c10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x107682850>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x102c909d0>]}
+[0m06:22:31.739390 [debug] [MainThread]: Flushing usage events
+[0m06:36:13.328365 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x104ec16d0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x104ec0890>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x104eb97d0>]}
+
+
+============================== 06:36:13.331547 | a5480dd5-0c3c-44fb-b586-5787ccb0f2d2 ==============================
+[0m06:36:13.331547 [info ] [MainThread]: Running with dbt=1.8.7
+[0m06:36:13.331849 [debug] [MainThread]: running dbt with arguments {'printer_width': '80', 'indirect_selection': 'eager', 'log_cache_events': 'False', 'write_json': 'True', 'partial_parse': 'True', 'cache_selected_only': 'False', 'warn_error': 'None', 'fail_fast': 'False', 'version_check': 'True', 'log_path': 'logs', 'debug': 'False', 'profiles_dir': '/Users/faishalrayyan/.dbt', 'use_colors': 'True', 'use_experimental_parser': 'False', 'empty': 'None', 'quiet': 'False', 'no_print': 'None', 'log_format': 'default', 'introspect': 'True', 'static_parser': 'True', 'invocation_command': 'dbt init jaffle_shop', 'target_path': 'None', 'warn_error_options': 'WarnErrorOptions(include=[], exclude=[])', 'send_anonymous_usage_stats': 'True'}
+[0m06:36:13.339184 [info ] [MainThread]: A project called jaffle_shop already exists here.
+[0m06:36:13.340050 [debug] [MainThread]: Resource report: {"command_name": "init", "command_success": true, "command_wall_clock_time": 0.039535373, "process_user_time": 0.54738, "process_kernel_time": 0.10028, "process_mem_max_rss": "94339072", "process_in_blocks": "0", "process_out_blocks": "0"}
+[0m06:36:13.340459 [debug] [MainThread]: Command `dbt init` succeeded at 06:36:13.340401 after 0.04 seconds
+[0m06:36:13.340670 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x104e701d0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x104ebae90>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x104eba1d0>]}
+[0m06:36:13.340876 [debug] [MainThread]: Flushing usage events
