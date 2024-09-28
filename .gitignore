@@ -1,0 +1,11 @@
+dbt-env
+.venv
+credential.json
+.terraform.lock.hcl
+
+# Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
