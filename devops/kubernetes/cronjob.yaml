@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: pingperminute
+spec:
+  schedule: "* * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: ping
+            image: nginx:alpine
+            command:
+              - "ping"
+              - "tiktok.com"
+              - "-c"
+              - "3"
+          restartPolicy: OnFailure

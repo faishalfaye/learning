@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: myapp-config
+data:
+  APPNAME: web-production
+  APPVERSION: '1.0'
+  AUTHOR: PT studidevsecops
+
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp-with-configmap
+  labels:
+    name: myapp-with-configmap
+spec:
+  containers:
+  - name: myapp-with-configmap
+    image: nginx:alpine
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    ports:
+      - containerPort: 80
+    envFrom:
+      - configMapRef:
+          name: myapp-config

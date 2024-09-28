@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: job-1
+spec:
+  ttlSecondsAfterFinished: 100
+  template:
+    spec:
+      containers:
+      - name: ping
+        image: nginx:alpine
+        command:
+          - "ping"
+          - "tiktok.com"
+          - "-c"
+          - "3"
+      restartPolicy: Never
