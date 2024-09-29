@@ -1,28 +1,13 @@
-{{
-  config(
-    materialized='view'
-  )
-}}
-
 with customers as (
 
-select
-    ID as customer_id,
-    FIRST_NAME as first_name,
-    LAST_NAME as last_name
+    select * from {{ ref('stg_customers') }}
 
-from dbt.customers
 ),
 
 orders as (
 
-    select
-        ID as order_id,
-        USER_ID as customer_id,
-        ORDER_DATE as order_date,
-        STATUS as status
+    select * from {{ ref('stg_orders') }}
 
-    from dbt.orders
 ),
 
 customer_orders as (
@@ -37,6 +22,7 @@ customer_orders as (
     from orders
 
     group by customer_id
+
 ),
 
 final as (
@@ -52,6 +38,7 @@ final as (
     from customers
 
     left join customer_orders on customers.customer_id = customer_orders.customer_id
+
 )
 
 select * from final
