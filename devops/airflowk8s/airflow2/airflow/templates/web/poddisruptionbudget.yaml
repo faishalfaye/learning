@@ -1,0 +1,21 @@
+---
+# Source: airflow/templates/web/poddisruptionbudget.yaml
+kind: PodDisruptionBudget
+apiVersion: policy/v1
+metadata:
+  name: release-name-airflow-web
+  namespace: "default"
+  labels:
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: airflow
+    app.kubernetes.io/version: 2.10.3
+    helm.sh/chart: airflow-21.5.1
+    app.kubernetes.io/component: web
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: release-name
+      app.kubernetes.io/name: airflow
+      app.kubernetes.io/component: web

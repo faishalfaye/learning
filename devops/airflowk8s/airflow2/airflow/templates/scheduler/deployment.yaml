@@ -1,0 +1,261 @@
+---
+# Source: airflow/templates/scheduler/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: release-name-airflow-scheduler
+  namespace: "default"
+  labels:
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: airflow
+    app.kubernetes.io/version: 2.10.3
+    helm.sh/chart: airflow-21.5.1
+    app.kubernetes.io/component: scheduler
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: release-name
+      app.kubernetes.io/name: airflow
+      app.kubernetes.io/component: scheduler
+  replicas: 1
+  strategy:
+    rollingUpdate: {}
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: release-name
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: airflow
+        app.kubernetes.io/version: 2.10.3
+        helm.sh/chart: airflow-21.5.1
+        app.kubernetes.io/component: scheduler
+      annotations:
+        checksum/configmap: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
+    spec:
+      
+      automountServiceAccountToken: false
+      affinity:
+        podAffinity:
+          
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/instance: release-name
+                    app.kubernetes.io/name: airflow
+                    app.kubernetes.io/component: scheduler
+                topologyKey: kubernetes.io/hostname
+              weight: 1
+        nodeAffinity:
+          
+      serviceAccountName: release-name-airflow
+      securityContext:
+        fsGroup: 1001
+        fsGroupChangePolicy: Always
+        supplementalGroups: []
+        sysctls: []
+      initContainers:
+        - name: create-default-config
+          image: docker.io/bitnami/airflow:2.10.3-debian-12-r1
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              add: []
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsGroup: 1001
+            runAsNonRoot: true
+            runAsUser: 1001
+            seLinuxOptions: {}
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            limits:
+              cpu: 150m
+              ephemeral-storage: 2Gi
+              memory: 192Mi
+            requests:
+              cpu: 100m
+              ephemeral-storage: 50Mi
+              memory: 128Mi
+          command:
+            - /bin/bash
+          args:
+            - -ec
+            - |
+              cp "$(find /opt/bitnami/airflow -name default_airflow.cfg)" /default-conf/airflow.cfg
+              cp "$(find /opt/bitnami/airflow -name default_webserver_config.py)" /default-conf/webserver_config.py
+              # HACK: When testing the connection it creates an empty airflow.db file at the
+              # application root
+              touch /default-conf/airflow.db    
+          volumeMounts:
+            - name: empty-dir
+              mountPath: /default-conf
+              subPath: app-default-conf-dir
+        - name: wait-for-web-server
+          image: docker.io/bitnami/airflow:2.10.3-debian-12-r1
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              add: []
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsGroup: 1001
+            runAsNonRoot: true
+            runAsUser: 1001
+            seLinuxOptions: {}
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            limits:
+              cpu: 150m
+              ephemeral-storage: 2Gi
+              memory: 192Mi
+            requests:
+              cpu: 100m
+              ephemeral-storage: 50Mi
+              memory: 128Mi
+          command:
+            - /bin/bash
+          args:
+            - -ec
+            - |
+              . /opt/bitnami/scripts/libairflow.sh
+        
+              info "Waiting for Airflow Webserver to be up"
+              airflow_wait_for_webserver "$AIRFLOW_WEBSERVER_HOST" "$AIRFLOW_WEBSERVER_PORT_NUMBER"
+          env:
+            - name: AIRFLOW_WEBSERVER_HOST
+              value: release-name-airflow
+            - name: AIRFLOW_WEBSERVER_PORT_NUMBER
+              value: "8080"
+      containers:
+        - name: airflow-scheduler
+          image: "docker.io/bitnami/airflow:2.10.3-debian-12-r1"
+          imagePullPolicy: "IfNotPresent"
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsGroup: 1001
+            runAsNonRoot: true
+            runAsUser: 1001
+            seLinuxOptions: {}
+            seccompProfile:
+              type: RuntimeDefault
+          env:
+            - name: AIRFLOW_FERNET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: release-name-airflow
+                  key: airflow-fernet-key
+            - name: AIRFLOW_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: release-name-airflow
+                  key: airflow-secret-key
+            - name: AIRFLOW_LOAD_EXAMPLES
+              value: "no"
+            - name: AIRFLOW_STANDALONE_DAG_PROCESSOR
+              value: "no"
+            - name: AIRFLOW_FORCE_OVERWRITE_CONF_FILE
+              value: "yes"
+            - name: AIRFLOW_DATABASE_NAME
+              value: "bitnami_airflow"
+            - name: AIRFLOW_DATABASE_USERNAME
+              value: "bn_airflow"
+            - name: AIRFLOW_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: release-name-postgresql
+                  key: password
+            - name: AIRFLOW_DATABASE_HOST
+              value: "release-name-postgresql"
+            - name: AIRFLOW_DATABASE_PORT_NUMBER
+              value: "5432"
+            
+            - name: REDIS_HOST
+              value: "release-name-redis-master"
+            - name: REDIS_PORT_NUMBER
+              value: "6379"
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: release-name-redis
+                  key: redis-password
+            
+            - name: AIRFLOW_COMPONENT_TYPE
+              value: "scheduler"
+            - name: AIRFLOW_EXECUTOR
+              value: CeleryExecutor
+            - name: AIRFLOW_WEBSERVER_HOST
+              value: release-name-airflow
+            - name: AIRFLOW_WEBSERVER_PORT_NUMBER
+              value: "8080"
+          livenessProbe:
+            failureThreshold: 6
+            initialDelaySeconds: 180
+            periodSeconds: 20
+            successThreshold: 1
+            timeoutSeconds: 15
+            exec:
+              command:
+                - /bin/bash
+                - -ec
+                - |
+                  CONNECTION_CHECK_MAX_COUNT=0 airflow jobs check --job-type SchedulerJob --local 2>/dev/null
+          readinessProbe:
+            failureThreshold: 6
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 15
+            exec:
+              command:
+                - /bin/bash
+                - -ec
+                - |
+                  airflow jobs check --job-type SchedulerJob --local 2>/dev/null
+          resources:
+            limits:
+              cpu: 750m
+              ephemeral-storage: 2Gi
+              memory: 768Mi
+            requests:
+              cpu: 500m
+              ephemeral-storage: 50Mi
+              memory: 512Mi
+          volumeMounts:
+            - name: empty-dir
+              mountPath: /opt/bitnami/airflow/nss-wrapper
+              subPath: app-nss-wrapper-dir
+            - name: empty-dir
+              mountPath: /opt/bitnami/airflow/logs
+              subPath: app-logs-dir
+            - name: empty-dir
+              mountPath: /opt/bitnami/airflow/tmp
+              subPath: app-tmp-dir
+            - name: empty-dir
+              mountPath: /opt/bitnami/airflow/airflow.db
+              subPath: app-default-conf-dir/airflow.db
+            - name: empty-dir
+              mountPath: /tmp
+              subPath: tmp-dir
+            - name: empty-dir
+              mountPath: /opt/bitnami/airflow/airflow.cfg
+              subPath: app-default-conf-dir/airflow.cfg
+      volumes:
+        - name: empty-dir
+          emptyDir: {}
